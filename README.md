@@ -6,6 +6,8 @@ Vortex is an open-source VS Code extension that uses the power of GPT to enhance
 
 To get started with Vortex, simply install the extension from the VScode Marketplace. Once installed, Vortex will be available in the editor and can be used to enhance and edit your code.
 
+When the extension activates, you will see a prompt to enter your OpenAI API key, enter the key here and the extension will be ready to use.
+
 ## Usage
 
 To use Vortex, follow these simple steps:
@@ -62,11 +64,7 @@ To use Vortex, you will need:
 - Visual Studio Code
 - A valid OpenAI API key
 
-**Note: WIP - there will be a way to input API Key to activate the extension**
-
 You can fetch your OpenAI API key at https://platform.openai.com/account/api-keys.
-
-// update with notes on how to set the API key once this is live
 
 ## Extension Settings
 
@@ -76,13 +74,7 @@ This extension contributes the following settings:
 
 ## Known Issues
 
-- Currently there is no way to input API key to use the extension, this will be the first item to fix.
-
-## Release Notes
-
-### 0.1.0
-
-First version.
+- The API key needs to be entered every time the workspace is reloaded.
 
 ---
 
