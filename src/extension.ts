@@ -7,7 +7,7 @@ import {
 import { Vortex } from "./vortex";
 
 const vortexConfig = vscode.workspace.getConfiguration("vortex");
-const vortex = new Vortex("openai-api-key");
+let vortex: Vortex;
 
 const displayOutput = async (
   output: string,
@@ -38,6 +38,21 @@ const displayOutput = async (
 };
 
 export async function activate(context: vscode.ExtensionContext) {
+  const openAIApiKey = await vscode.window.showInputBox({
+    title: "OpenAI API Key",
+    prompt: "Enter your OpenAI API Key here",
+    password: true,
+    ignoreFocusOut: true,
+  });
+
+  if (!openAIApiKey) {
+    vscode.window.showWarningMessage(
+      "OpenAI API Key not provided, Vortex is not activated"
+    );
+    return;
+  }
+  vortex = new Vortex(openAIApiKey);
+
   let disposable = vscode.commands.registerCommand(
     "vortex.editCode",
     async () => {
