@@ -1,71 +1,93 @@
-# Vortex README
+# Vortex - Code editing. Redefined, using GPT
 
-This is the README for your extension "vortex". After writing up a brief description, we recommend including the following sections.
+Vortex is an open-source VS Code extension that uses the power of GPT to enhance and edit code directly within the VS Code editor. With Vortex, you can leverage the power of AI to write better code, faster.
 
-## Features
+## Getting Started
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+To get started with Vortex, simply install the extension from the VScode Marketplace. Once installed, Vortex will be available in the editor and can be used to enhance and edit your code.
 
-For example if there is an image subfolder under your extension project workspace:
+## Usage
 
-\!\[feature X\]\(images/feature-x.png\)
+To use Vortex, follow these simple steps:
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+1. Select the code you want to edit in the editor.
+2. Open the VScode Command Palette (press `Ctrl+Shift+P` or `Cmd+Shift+P` on Mac).
+3. Type `Vortex: Edit Code` and press enter to execute the command.
+4. A prompt will appear asking you to describe the edits you want to make. Enter a brief description of the changes you want Vortex to make (e.g. `Add a docstring`), and press enter.
+
+That's it! Vortex will automatically apply the requested edits, saving you time and effort. If you're not happy with the suggested edits, you can always modify your description and generate new suggestions until you find the changes you're looking for.
+
+## Example
+
+Assume you have the following function:
+
+```python
+def get_grade(score):
+    if score >= 90:
+        grade = 'A'
+    elif score >= 80:
+        grade = 'B'
+    elif score >= 70:
+        grade = 'C'
+    else:
+        grade = 'D'
+    return grade
+```
+
+After performing a `Vortex: Edit Code` followed by the edit description: `Use dict instead of if else`, Vortex automatically updates the code to:
+
+```python
+def get_grade(score):
+    grade = {
+        score >= 90: 'A',
+        score >= 80: 'B',
+        score >= 70: 'C',
+        True: 'D'
+    }
+    return grade[True]
+```
+
+## Use cases
+
+Here are a few edit descriptions for common use cases:
+
+**Docstring generation** -> `Docstring` or `Add Docstring`.
+
+**Refactoring** -> `Better variable names`.
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+To use Vortex, you will need:
+
+- Visual Studio Code
+- A valid OpenAI API key
+
+**Note: WIP - there will be a way to input API Key to activate the extension**
+
+You can fetch your OpenAI API key at https://platform.openai.com/account/api-keys.
+
+// update with notes on how to set the API key once this is live
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
 This extension contributes the following settings:
 
-- `myExtension.enable`: Enable/disable this extension.
-- `myExtension.thing`: Set to `blah` to do something.
+- `vortex.maxLinesToProcess`: Use this to set the maximum number of lines to be processed. This is to make sure that you don't accidentally run this on a huge piece of code, which will end up using tokens from your OpenAI account.
 
 ## Known Issues
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+- Currently there is no way to input API key to use the extension, this will be the first item to fix.
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
+### 0.1.0
 
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
+First version.
 
 ---
 
-## Following extension guidelines
+## License
 
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-- [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-- Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-- Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-- Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-- [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-- [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
+Vortex is licensed under the MIT License. See the LICENSE file for more information.
 
 **Enjoy!**
