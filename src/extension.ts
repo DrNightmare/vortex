@@ -6,7 +6,9 @@ import {
   getText,
 } from "./utils";
 import { Vortex } from "./vortex";
+import SecretStorageInterface from "./secret-storage-interface";
 
+const OPENAI_API_KEY_LOOKUP = "OPENAI_API_KEY";
 const vortexConfig = vscode.workspace.getConfiguration("vortex");
 let vortex: Vortex;
 
@@ -39,19 +41,29 @@ const displayOutput = async (
 };
 
 export async function activate(context: vscode.ExtensionContext) {
-  const openAIApiKey = await vscode.window.showInputBox({
-    title: "OpenAI API Key",
-    prompt: "Enter your OpenAI API Key here",
-    password: true,
-    ignoreFocusOut: true,
-  });
+  SecretStorageInterface.init(context);
+  const secretStorage = SecretStorageInterface.instance;
+
+  let openAIApiKey;
+
+  openAIApiKey = await secretStorage.get(OPENAI_API_KEY_LOOKUP);
 
   if (!openAIApiKey) {
-    vscode.window.showWarningMessage(
-      "OpenAI API Key not provided, Vortex is not activated"
-    );
-    return;
+    openAIApiKey = await vscode.window.showInputBox({
+      title: "OpenAI API Key",
+      prompt: "Enter your OpenAI API Key here",
+      password: true,
+      ignoreFocusOut: true,
+    });
+    if (!openAIApiKey) {
+      vscode.window.showWarningMessage(
+        "OpenAI API Key not provided, Vortex is not activated"
+      );
+      return;
+    }
+    await secretStorage.set(OPENAI_API_KEY_LOOKUP, openAIApiKey);
   }
+
   vortex = new Vortex(openAIApiKey);
 
   let editCodeDisposable = vscode.commands.registerCommand(
