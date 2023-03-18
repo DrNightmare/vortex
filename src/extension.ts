@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import {
   getEditDescription,
+  getGenerateDescription,
   getNumberOfLinesInSelection,
   getText,
 } from "./utils";
@@ -53,11 +54,13 @@ export async function activate(context: vscode.ExtensionContext) {
   }
   vortex = new Vortex(openAIApiKey);
 
-  let disposable = vscode.commands.registerCommand(
+  let editCodeDisposable = vscode.commands.registerCommand(
     "vortex.editCode",
     async () => {
       const editor = vscode.window.activeTextEditor;
-      if (!editor) return;
+      if (!editor) {
+        return;
+      }
 
       const { selection, document } = editor;
       const { maxLinesToProcess } = vortexConfig;
@@ -72,7 +75,9 @@ export async function activate(context: vscode.ExtensionContext) {
 
       const editDescription = await getEditDescription();
       console.log(`editDescription: ${editDescription}`);
-      if (!editDescription) return;
+      if (!editDescription) {
+        return;
+      }
 
       const updatedCode = await vortex.editCode(text, editDescription);
       console.log(`updatedCode: ${updatedCode}`);
@@ -108,7 +113,47 @@ export async function activate(context: vscode.ExtensionContext) {
       }
     }
   );
-  context.subscriptions.push(disposable);
+
+  let generateCodeDisposable = vscode.commands.registerCommand(
+    "vortex.generateCode",
+    async () => {
+      const editor = vscode.window.activeTextEditor;
+      if (!editor) {
+        return;
+      }
+
+      const generateDescription = await getGenerateDescription();
+      console.log(`generateDescription: ${generateDescription}`);
+      if (!generateDescription) {
+        return;
+      }
+
+      const { languageId } = editor.document;
+      const generatedCode = await vortex.generateCode(
+        generateDescription,
+        languageId
+      );
+
+      console.log(`generatedCode: ${generatedCode}`);
+      if (!generatedCode) {
+        await vscode.window.showErrorMessage(
+          `There was an issue processing with Vortex`
+        );
+        return;
+      }
+
+      await editor.edit((edit) => {
+        edit.insert(editor.selection.start, generatedCode);
+      });
+
+      await vscode.window.showInformationMessage(
+        `Finished task: ${generateDescription}`,
+        "Great!"
+      );
+    }
+  );
+  context.subscriptions.push(editCodeDisposable);
+  context.subscriptions.push(generateCodeDisposable);
   vscode.window.showInformationMessage(`Vortex is active`);
 }
 

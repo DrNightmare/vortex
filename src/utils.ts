@@ -43,3 +43,20 @@ export const getEditDescription = async () => {
   }
   return editDescription;
 };
+
+/**
+ * Prompts the user for a generate description
+ * @returns {Promise<string | null>} The generate description or null if none was provided
+ */
+export const getGenerateDescription = async () => {
+  const generateDescription = await vscode.window.showInputBox({
+    title: "Generate code description",
+    prompt: "Describe what code you would like to generate",
+    placeHolder: "Util function to calculate average of numbers",
+  });
+  if (!generateDescription) {
+    vscode.window.showErrorMessage(`No generate description provided.`);
+    return null;
+  }
+  return generateDescription;
+};
