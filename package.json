@@ -20,6 +20,10 @@
       {
         "command": "vortex.editCode",
         "title": "Vortex: Edit code"
+      },
+      {
+        "command": "vortex.generateCode",
+        "title": "Vortex: Generate code"
       }
     ],
     "configuration": [
