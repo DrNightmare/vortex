@@ -24,6 +24,10 @@
       {
         "command": "vortex.generateCode",
         "title": "Vortex: Generate code"
+      },
+      {
+        "command": "vortex.reviewCode",
+        "title": "Vortex: Review code"
       }
     ],
     "configuration": [
