@@ -76,13 +76,11 @@ export async function activate(context: vscode.ExtensionContext) {
       const text = getText(document, selection);
 
       const editDescription = await getEditDescription();
-      console.log(`editDescription: ${editDescription}`);
       if (!editDescription) {
         return;
       }
 
       const updatedCode = await vortex.editCode(text, editDescription);
-      console.log(`updatedCode: ${updatedCode}`);
 
       if (!updatedCode) {
         await vscode.window.showErrorMessage(
@@ -125,7 +123,6 @@ export async function activate(context: vscode.ExtensionContext) {
       }
 
       const generateDescription = await getGenerateDescription();
-      console.log(`generateDescription: ${generateDescription}`);
       if (!generateDescription) {
         return;
       }
@@ -136,7 +133,6 @@ export async function activate(context: vscode.ExtensionContext) {
         languageId
       );
 
-      console.log(`generatedCode: ${generatedCode}`);
       if (!generatedCode) {
         await vscode.window.showErrorMessage(
           `There was an issue processing with Vortex`
