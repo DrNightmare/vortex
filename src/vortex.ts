@@ -28,7 +28,7 @@ export class Vortex {
       console.log("OpenAI not yet initialized");
       return null;
     }
-    const prompt = `Update the below code with this edit description: ${editDescription}. Only do the requested edits. Only output the code, do not provide descriptions. Include imports if necessary for code to function.\n${originalCode.trim()}`;
+    const prompt = `Act as an expert software engineer. Update the below code with this edit description: ${editDescription}. Only do the requested edits. Preserve original code indentation. Include imports if necessary for code to function. Only output the code, do not provide descriptions.\n${originalCode.trim()}`;
     try {
       const messages = [
         { role: ChatCompletionRequestMessageRoleEnum.User, content: prompt },
@@ -83,7 +83,11 @@ export class Vortex {
       console.log("OpenAI not yet initialized");
       return null;
     }
-    const prompt = `Do a thorough review of the following code and respond with clear actionables on what could be improved: ${code}`;
+    const prompt = `Act as an expert software engineer. Do a thorough review of the following code and respond with clear actionables on what could be improved: ${code}. Do not include code, just include the actionables in a list. Limit prose. Format your response in markdown.
+    Example output for reference:
+    ## Review:
+    1. Add input validation: The input function assumes that the user will enter a valid integer, but this may not always be the case. Adding input validation can address this issue.
+    2. Use f-Strings: Instead of concatenating strings using the operator, use f-Strings for better readability and performance.`;
     try {
       const messages = [
         { role: ChatCompletionRequestMessageRoleEnum.User, content: prompt },
