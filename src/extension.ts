@@ -12,32 +12,22 @@ const OPENAI_API_KEY_LOOKUP = "OPENAI_API_KEY";
 const vortexConfig = vscode.workspace.getConfiguration("vortex");
 let vortex: Vortex;
 
-const displayOutput = async (
-  output: string,
-  uriString: string,
-  languageId?: string
-) => {
-  const doc = await vscode.workspace.openTextDocument({ content: output });
-  const editor = await vscode.window.showTextDocument(
-    doc,
-    vscode.ViewColumn.Beside
-  );
+const displayOutput = async (output: string, languageId: string) => {
+  const uri = vscode.Uri.parse("untitled:Review.md");
+  const doc = await vscode.workspace.openTextDocument(uri);
+  const editor = await vscode.window.showTextDocument(doc, {
+    preview: false,
+    viewColumn: vscode.ViewColumn.Beside,
+  });
+
+  await editor.edit((editBuilder) => {
+    editBuilder.insert(new vscode.Position(0, 0), output);
+  });
+  await vscode.commands.executeCommand("markdown.showPreview", uri);
 
   if (languageId) {
     vscode.languages.setTextDocumentLanguage(doc, languageId);
   }
-  editor.edit((edit) => {
-    const firstLine = editor.document.lineAt(0);
-    const lastLine = editor.document.lineAt(editor.document.lineCount - 1);
-    const textRange = new vscode.Range(
-      firstLine.range.start,
-      lastLine.range.end
-    );
-    edit.replace(textRange, output);
-  });
-  await editor.edit((edit) => {
-    edit.insert(new vscode.Position(0, 0), output);
-  });
 };
 
 export async function activate(context: vscode.ExtensionContext) {
@@ -194,7 +184,7 @@ export async function activate(context: vscode.ExtensionContext) {
         return;
       }
 
-      await displayOutput(reviewText, "Code review");
+      await displayOutput(reviewText, "markdown");
 
       await vscode.window.showInformationMessage(
         `Finished task: Review code`,
