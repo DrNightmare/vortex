@@ -77,4 +77,30 @@ export class Vortex {
       return null;
     }
   };
+
+  reviewCode = async (code: string): Promise<string | null> => {
+    if (!this.openai) {
+      console.log("OpenAI not yet initialized");
+      return null;
+    }
+    const prompt = `Do a thorough review of the following code and respond with clear actionables on what could be improved: ${code}`;
+    try {
+      const messages = [
+        { role: ChatCompletionRequestMessageRoleEnum.User, content: prompt },
+      ];
+      const response = await this.openai.createChatCompletion({
+        model: "gpt-3.5-turbo",
+        messages,
+      });
+      if (response.status !== 200) {
+        console.log(`Non 2xx attempting to createCompletion: ${response.data}`);
+        return null;
+      }
+      const review = response.data.choices[0].message?.content;
+      return review ? review.trim() : null;
+    } catch (error: any) {
+      console.log(`Error attempting to createCompletion: ${error.message}`);
+      return null;
+    }
+  };
 }

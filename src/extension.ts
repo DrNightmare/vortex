@@ -15,16 +15,17 @@ let vortex: Vortex;
 const displayOutput = async (
   output: string,
   uriString: string,
-  message: string,
-  languageId: string
+  languageId?: string
 ) => {
-  const uri = vscode.Uri.parse(uriString);
-  const doc = await vscode.workspace.openTextDocument(uri);
+  const doc = await vscode.workspace.openTextDocument({ content: output });
   const editor = await vscode.window.showTextDocument(
     doc,
     vscode.ViewColumn.Beside
   );
-  vscode.languages.setTextDocumentLanguage(doc, languageId);
+
+  if (languageId) {
+    vscode.languages.setTextDocumentLanguage(doc, languageId);
+  }
   editor.edit((edit) => {
     const firstLine = editor.document.lineAt(0);
     const lastLine = editor.document.lineAt(editor.document.lineCount - 1);
@@ -37,7 +38,6 @@ const displayOutput = async (
   await editor.edit((edit) => {
     edit.insert(new vscode.Position(0, 0), output);
   });
-  vscode.window.showInformationMessage(message);
 };
 
 export async function activate(context: vscode.ExtensionContext) {
@@ -164,8 +164,47 @@ export async function activate(context: vscode.ExtensionContext) {
       );
     }
   );
+
+  let reviewCodeDisposable = vscode.commands.registerCommand(
+    "vortex.reviewCode",
+    async () => {
+      const editor = vscode.window.activeTextEditor;
+      if (!editor) {
+        return;
+      }
+
+      const { document, selection } = editor;
+      const code = getText(document, selection);
+
+      const { maxLinesToProcess } = vortexConfig;
+      const lineCount = getNumberOfLinesInSelection(document, selection);
+      if (lineCount > maxLinesToProcess) {
+        await vscode.window.showErrorMessage(
+          `${lineCount} lines found, skipping. Max lines threshold is ${maxLinesToProcess}`
+        );
+        return;
+      }
+
+      const reviewText = await vortex.reviewCode(code);
+
+      if (!reviewText) {
+        await vscode.window.showErrorMessage(
+          `There was an issue processing with Vortex`
+        );
+        return;
+      }
+
+      await displayOutput(reviewText, "Code review");
+
+      await vscode.window.showInformationMessage(
+        `Finished task: Review code`,
+        "Great!"
+      );
+    }
+  );
   context.subscriptions.push(editCodeDisposable);
   context.subscriptions.push(generateCodeDisposable);
+  context.subscriptions.push(reviewCodeDisposable);
   vscode.window.showInformationMessage(`Vortex is active`);
 }
 
