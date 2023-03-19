@@ -16,7 +16,11 @@ export default class SecretStorageInterface {
   }
 
   async set(key: string, value: string): Promise<void> {
-    this.secretStorage.store(key, value);
+    try {
+      await this.secretStorage.store(key, value);
+    } catch (error) {
+      console.error(`Error setting key ${key}:`, error);
+    }
   }
 
   async get(key: string): Promise<string | undefined> {
