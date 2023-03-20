@@ -28,6 +28,10 @@
       {
         "command": "vortex.reviewCode",
         "title": "Vortex: Review code"
+      },
+      {
+        "command": "vortex.updateApiKey",
+        "title": "Vortex: Update API Key"
       }
     ],
     "configuration": [

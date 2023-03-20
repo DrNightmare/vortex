@@ -27,36 +27,48 @@ export const getNumberOfLinesInSelection = (
   return selection.isEmpty ? document.lineCount : text.split("\n").length;
 };
 
-/**
- * Prompts the user for an edit description
- * @returns {Promise<string | null>} The edit description or null if none was provided
- */
-export const getEditDescription = async () => {
-  const editDescription = await vscode.window.showInputBox({
-    title: "Edit description",
-    prompt: "Describe what edits you would like to make",
-    placeHolder: "Add comments",
+const getTextInput = async (context: {
+  title: string;
+  prompt: string;
+  placeholder?: string;
+  ignoreFocusOut?: boolean;
+  password?: boolean;
+}) => {
+  const textInput = await vscode.window.showInputBox({
+    title: context.title,
+    prompt: context.prompt,
+    placeHolder: context.placeholder,
+    ignoreFocusOut: context.ignoreFocusOut,
+    password: context.password,
   });
-  if (!editDescription) {
-    vscode.window.showErrorMessage(`No edit description provided.`);
+  if (!textInput) {
+    vscode.window.showErrorMessage(`No ${context.title} provided.`);
     return null;
   }
-  return editDescription;
+  return textInput;
 };
 
-/**
- * Prompts the user for a generate description
- * @returns {Promise<string | null>} The generate description or null if none was provided
- */
+export const getEditDescription = async () => {
+  return await getTextInput({
+    title: "Edit description",
+    prompt: "Describe what edits you would like to make",
+    placeholder: "Add comments",
+  });
+};
+
 export const getGenerateDescription = async () => {
-  const generateDescription = await vscode.window.showInputBox({
+  return await getTextInput({
     title: "Generate code description",
     prompt: "Describe what code you would like to generate",
-    placeHolder: "Util function to calculate average of numbers",
+    placeholder: "Util function to calculate average of numbers",
   });
-  if (!generateDescription) {
-    vscode.window.showErrorMessage(`No generate description provided.`);
-    return null;
-  }
-  return generateDescription;
+};
+
+export const getApiKey = async () => {
+  return await getTextInput({
+    title: "OpenAI API Key",
+    prompt: "Enter your OpenAI API Key here",
+    password: true,
+    ignoreFocusOut: true,
+  });
 };
