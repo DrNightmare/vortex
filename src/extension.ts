@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import {
+  getApiKey,
   getEditDescription,
   getGenerateDescription,
   getNumberOfLinesInSelection,
@@ -39,12 +40,7 @@ export async function activate(context: vscode.ExtensionContext) {
   openAIApiKey = await secretStorage.get(OPENAI_API_KEY_LOOKUP);
 
   if (!openAIApiKey) {
-    openAIApiKey = await vscode.window.showInputBox({
-      title: "OpenAI API Key",
-      prompt: "Enter your OpenAI API Key here",
-      password: true,
-      ignoreFocusOut: true,
-    });
+    openAIApiKey = await getApiKey();
     if (!openAIApiKey) {
       vscode.window.showWarningMessage(
         "OpenAI API Key not provided, Vortex is not activated"
@@ -188,9 +184,33 @@ export async function activate(context: vscode.ExtensionContext) {
       );
     }
   );
+
+  let updateApiKeyDisposable = vscode.commands.registerCommand(
+    "vortex.updateApiKey",
+    async () => {
+      openAIApiKey = await getApiKey();
+
+      if (!openAIApiKey) {
+        vscode.window.showWarningMessage(
+          "OpenAI API Key not provided, Vortex is not activated"
+        );
+        return;
+      }
+      await secretStorage.set(OPENAI_API_KEY_LOOKUP, openAIApiKey);
+
+      // reinitialize vortex here, as just updating the store will not update the older instance
+      vortex = new Vortex(openAIApiKey);
+
+      await vscode.window.showInformationMessage(
+        `Vortex: Updated OpenAI API key successfully`
+      );
+    }
+  );
+
   context.subscriptions.push(editCodeDisposable);
   context.subscriptions.push(generateCodeDisposable);
   context.subscriptions.push(reviewCodeDisposable);
+  context.subscriptions.push(updateApiKeyDisposable);
   vscode.window.showInformationMessage(`Vortex is active`);
 }
 
