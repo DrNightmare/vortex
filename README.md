@@ -82,7 +82,8 @@ Here are a few samples of commands followed by descriptions for common use cases
 
 This extension contributes the following settings:
 
-- `vortex.maxLinesToProcess`: Use this to set the maximum number of lines to be processed. This is to make sure that you don't accidentally run this on a huge piece of code, which will end up using tokens from your OpenAI account.
+- `vortex.maxLinesToProcess`: Use this to set the maximum number of lines to be processed. This is to make sure that you don't accidentally run this on a huge piece of code, which will end up using tokens from your OpenAI account. Default value is `20`.
+- `vortex.requestTimeout`: Maximum number of seconds to wait for the API to respond. Default value is `10`.
 
 ---
 

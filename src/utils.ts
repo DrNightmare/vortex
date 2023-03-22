@@ -72,3 +72,7 @@ export const getApiKey = async () => {
     ignoreFocusOut: true,
   });
 };
+
+export const getConfigValue = (configKey: string): any => {
+  return vscode.workspace.getConfiguration("vortex").get(configKey);
+};
