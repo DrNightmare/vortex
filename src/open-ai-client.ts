@@ -3,6 +3,7 @@ import {
   Configuration,
   OpenAIApi,
 } from "openai";
+import { getConfigValue } from "./utils";
 
 enum Model {
   gpt35Turbo = "gpt-3.5-turbo",
@@ -11,10 +12,15 @@ enum Model {
 export class OpenAiClient {
   private openai: OpenAIApi | undefined;
 
+  private readonly timeout: number | undefined;
+
   constructor(openAiApiKey: string) {
     const configuration = new Configuration({
       apiKey: openAiApiKey,
     });
+
+    const configTimeout = getConfigValue("requestTimeout");
+    this.timeout = Number(configTimeout ?? 10) * 1000;
     this.openai = new OpenAIApi(configuration);
   }
 
@@ -26,10 +32,13 @@ export class OpenAiClient {
     const messages = [
       { role: ChatCompletionRequestMessageRoleEnum.User, content: prompt },
     ];
-    const response = await this.openai.createChatCompletion({
-      model: Model.gpt35Turbo,
-      messages,
-    });
+    const response = await this.openai.createChatCompletion(
+      {
+        model: Model.gpt35Turbo,
+        messages,
+      },
+      { timeout: this.timeout }
+    );
     if (response.status !== 200) {
       console.error(
         `Non 2xx attempting to createCompletion: ${response.status}, ${response.data}`
