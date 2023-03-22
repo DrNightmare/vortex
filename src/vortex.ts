@@ -1,3 +1,4 @@
+import { window, ProgressLocation } from "vscode";
 import { OpenAiClient } from "./open-ai-client";
 
 export class Vortex {
@@ -7,12 +8,15 @@ export class Vortex {
     this.openAiClient = new OpenAiClient(openAiApiKey);
   }
 
-  editCode = async (
-    originalCode: string,
-    editDescription: string
-  ): Promise<string | null> => {
+  editCode = async (originalCode: string, editDescription: string) => {
     const prompt = `Act as an expert software engineer. Update the below code with this edit description: ${editDescription}. Only do the requested edits. Preserve original code indentation. Include imports if necessary for code to function. Only output the code, do not provide descriptions.\n${originalCode.trim()}`;
-    return this.openAiClient.getResponse(prompt);
+    return await window.withProgress(
+      {
+        location: ProgressLocation.Notification,
+        title: "Processing...",
+      },
+      async () => this.openAiClient.getResponse(prompt)
+    );
   };
 
   generateCode = async (
@@ -27,7 +31,14 @@ export class Vortex {
     
     Input: Use language: ${language}. Text description: ${description}
     Code output:`;
-    return this.openAiClient.getResponse(prompt);
+
+    return await window.withProgress(
+      {
+        location: ProgressLocation.Notification,
+        title: "Processing...",
+      },
+      async () => this.openAiClient.getResponse(prompt)
+    );
   };
 
   reviewCode = async (code: string): Promise<string | null> => {
@@ -36,6 +47,12 @@ export class Vortex {
     ## Review:
     1. Add input validation: The input function assumes that the user will enter a valid integer, but this may not always be the case. Adding input validation can address this issue.
     2. Use f-Strings: Instead of concatenating strings using the operator, use f-Strings for better readability and performance.`;
-    return this.openAiClient.getResponse(prompt);
+    return await window.withProgress(
+      {
+        location: ProgressLocation.Notification,
+        title: "Processing...",
+      },
+      async () => this.openAiClient.getResponse(prompt)
+    );
   };
 }

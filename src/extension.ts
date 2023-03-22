@@ -101,11 +101,6 @@ export async function activate(context: vscode.ExtensionContext) {
         // clear selection
         const position = editor.selection.end;
         editor.selection = new vscode.Selection(position, position);
-
-        await vscode.window.showInformationMessage(
-          `Finished task: ${editDescription}`,
-          "Great!"
-        );
       }
     }
   );
@@ -139,11 +134,6 @@ export async function activate(context: vscode.ExtensionContext) {
       await editor.edit((edit) => {
         edit.insert(editor.selection.start, generatedCode);
       });
-
-      await vscode.window.showInformationMessage(
-        `Finished task: ${generateDescription}`,
-        "Great!"
-      );
     }
   );
 
@@ -177,11 +167,6 @@ export async function activate(context: vscode.ExtensionContext) {
       }
 
       await displayOutput(reviewText, "markdown");
-
-      await vscode.window.showInformationMessage(
-        `Finished task: Review code`,
-        "Great!"
-      );
     }
   );
 
