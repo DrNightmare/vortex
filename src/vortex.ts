@@ -19,12 +19,14 @@ export class Vortex {
     description: string,
     language: string
   ): Promise<string | null> => {
-    const prompt = `Act as an expert software engineer. Generate ${language} code with this requirement: ${description}. Only output the code, do not provide descriptions or put backticks around the code. Include imports if necessary for code to function.
-    Example output for reference:
-    import random
+    const prompt = `Act as a code generator. Given a requirement in the form of a text description, you should output the code necessary to achieve that requirement. The output code should be very clean, simple, efficient and easily readable. Use best coding practices when generating code. The code output should be in a format that can be directly used in a codebase, so ensure that ONLY the code is present in your response. Do not output any descriptions/notes/usage examples, etc.
+    Input: Use language: Python. Text description: function that returns sum of 2 numbers
+    Code output:
+    def sum_two_numbers(num1, num2):
+      return num1 + num2
     
-    def fn():
-      return random.choice([1, 2, 3])`;
+    Input: Use language: ${language}. Text description: ${description}
+    Code output:`;
     return this.openAiClient.getResponse(prompt);
   };
 
