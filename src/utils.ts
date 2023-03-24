@@ -41,11 +41,7 @@ const getTextInput = async (context: {
     ignoreFocusOut: context.ignoreFocusOut,
     password: context.password,
   });
-  if (!textInput) {
-    vscode.window.showErrorMessage(`No ${context.title} provided.`);
-    return null;
-  }
-  return textInput;
+  return textInput ?? null;
 };
 
 export const getEditDescription = async () => {
