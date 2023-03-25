@@ -72,3 +72,21 @@ export const getApiKey = async () => {
 export const getConfigValue = (configKey: string): any => {
   return vscode.workspace.getConfiguration("vortex").get(configKey);
 };
+
+export const displayOutput = async (output: string, languageId: string) => {
+  const uri = vscode.Uri.parse("untitled:Review.md");
+  const doc = await vscode.workspace.openTextDocument(uri);
+  const editor = await vscode.window.showTextDocument(doc, {
+    preview: false,
+    viewColumn: vscode.ViewColumn.Beside,
+  });
+
+  await editor.edit((editBuilder) => {
+    editBuilder.insert(new vscode.Position(0, 0), output);
+  });
+  await vscode.commands.executeCommand("markdown.showPreview", uri);
+
+  if (languageId) {
+    vscode.languages.setTextDocumentLanguage(doc, languageId);
+  }
+};
