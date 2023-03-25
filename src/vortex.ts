@@ -1,4 +1,4 @@
-import { window, ProgressLocation } from "vscode";
+import { window, ProgressLocation, TextEditor } from "vscode";
 import { OpenAiClient } from "./open-ai-client";
 
 export class Vortex {
@@ -20,25 +20,37 @@ export class Vortex {
   };
 
   generateCode = async (
-    description: string,
-    language: string
-  ): Promise<string | null> => {
+    editor: TextEditor,
+    description: string
+  ): Promise<void> => {
+    const { languageId } = editor.document;
     const prompt = `Act as a code generator. Given a requirement in the form of a text description, you should output the code necessary to achieve that requirement. The output code should be very clean, simple, efficient and easily readable. Use best coding practices when generating code. The code output should be in a format that can be directly used in a codebase, so ensure that ONLY the code is present in your response. Do not output any descriptions/notes/usage examples, etc.
     Input: Use language: Python. Text description: function that returns sum of 2 numbers
     Code output:
     def sum_two_numbers(num1, num2):
       return num1 + num2
     
-    Input: Use language: ${language}. Text description: ${description}
+    Input: Use language: ${languageId}. Text description: ${description}
     Code output:`;
 
-    return await window.withProgress(
+    const generatedCode = await window.withProgress(
       {
         location: ProgressLocation.Notification,
         title: "Processing...",
       },
       async () => this.openAiClient.getResponse(prompt)
     );
+
+    if (!generatedCode) {
+      await window.showErrorMessage(
+        `There was an issue processing with Vortex`
+      );
+      return;
+    }
+
+    await editor.edit((edit) => {
+      edit.insert(editor.selection.start, generatedCode);
+    });
   };
 
   reviewCode = async (code: string): Promise<string | null> => {

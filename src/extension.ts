@@ -117,23 +117,7 @@ export async function activate(context: vscode.ExtensionContext) {
       if (!generateDescription) {
         return;
       }
-
-      const { languageId } = editor.document;
-      const generatedCode = await vortex.generateCode(
-        generateDescription,
-        languageId
-      );
-
-      if (!generatedCode) {
-        await vscode.window.showErrorMessage(
-          `There was an issue processing with Vortex`
-        );
-        return;
-      }
-
-      await editor.edit((edit) => {
-        edit.insert(editor.selection.start, generatedCode);
-      });
+      await vortex.generateCode(editor, generateDescription);
     }
   );
 
