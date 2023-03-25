@@ -76,32 +76,7 @@ export async function activate(context: vscode.ExtensionContext) {
         return;
       }
 
-      const updatedCode = await vortex.editCode(text, editDescription);
-
-      if (!updatedCode) {
-        await vscode.window.showErrorMessage(
-          `There was an issue processing with Vortex`
-        );
-        return;
-      }
-
-      if (updatedCode) {
-        await editor.edit((edit) => {
-          const textRangeStart = selection.isEmpty
-            ? document.lineAt(0).range.start
-            : selection.start;
-          const numberOfLines = lineCount - 1;
-          const textRangeEnd = selection.isEmpty
-            ? document.lineAt(numberOfLines).range.end
-            : selection.end;
-          const textRange = new vscode.Range(textRangeStart, textRangeEnd);
-          edit.replace(textRange, updatedCode);
-        });
-
-        // clear selection
-        const position = editor.selection.end;
-        editor.selection = new vscode.Selection(position, position);
-      }
+      await vortex.editCode(editor, text, editDescription);
     }
   );
 

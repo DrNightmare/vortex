@@ -1,5 +1,6 @@
-import { window, ProgressLocation, TextEditor } from "vscode";
+import { window, ProgressLocation, TextEditor, Range, Selection } from "vscode";
 import { OpenAiClient } from "./open-ai-client";
+import { getNumberOfLinesInSelection } from "./utils";
 
 export class Vortex {
   private openAiClient: OpenAiClient;
@@ -8,15 +9,47 @@ export class Vortex {
     this.openAiClient = new OpenAiClient(openAiApiKey);
   }
 
-  editCode = async (originalCode: string, editDescription: string) => {
+  editCode = async (
+    editor: TextEditor,
+    originalCode: string,
+    editDescription: string
+  ) => {
     const prompt = `Act as an expert software engineer. Update the below code with this edit description: ${editDescription}. Only do the requested edits. Preserve original code indentation. Include imports if necessary for code to function. Only output the code, do not provide descriptions.\n${originalCode.trim()}`;
-    return await window.withProgress(
+    const updatedCode = await window.withProgress(
       {
         location: ProgressLocation.Notification,
         title: "Processing...",
       },
       async () => this.openAiClient.getResponse(prompt)
     );
+
+    if (!updatedCode) {
+      await window.showErrorMessage(
+        `There was an issue processing with Vortex`
+      );
+      return;
+    }
+
+    const { selection, document } = editor;
+    const lineCount = getNumberOfLinesInSelection(document, selection);
+
+    if (updatedCode) {
+      await editor.edit((edit) => {
+        const textRangeStart = selection.isEmpty
+          ? document.lineAt(0).range.start
+          : selection.start;
+        const numberOfLines = lineCount - 1;
+        const textRangeEnd = selection.isEmpty
+          ? document.lineAt(numberOfLines).range.end
+          : selection.end;
+        const textRange = new Range(textRangeStart, textRangeEnd);
+        edit.replace(textRange, updatedCode);
+      });
+
+      // clear selection
+      const position = editor.selection.end;
+      editor.selection = new Selection(position, position);
+    }
   };
 
   generateCode = async (
