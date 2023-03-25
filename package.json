@@ -112,5 +112,6 @@
   "author": {
     "name": "Arvind Prakash",
     "url": "https://github.com/DrNightmare"
-  }
+  },
+  "icon": "src/images/vortex-min.png"
 }
