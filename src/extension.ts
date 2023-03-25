@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import {
   getApiKey,
+  getConfigValue,
   getEditDescription,
   getGenerateDescription,
   getNumberOfLinesInSelection,
@@ -10,7 +11,6 @@ import { Vortex } from "./vortex";
 import SecretStorageInterface from "./secret-storage-interface";
 
 const OPENAI_API_KEY_LOOKUP = "OPENAI_API_KEY";
-const vortexConfig = vscode.workspace.getConfiguration("vortex");
 let vortex: Vortex;
 
 export async function activate(context: vscode.ExtensionContext) {
@@ -43,7 +43,7 @@ export async function activate(context: vscode.ExtensionContext) {
       }
 
       const { selection, document } = editor;
-      const { maxLinesToProcess } = vortexConfig;
+      const maxLinesToProcess = getConfigValue("maxLinesToProcess");
       const lineCount = getNumberOfLinesInSelection(document, selection);
       if (lineCount > maxLinesToProcess) {
         await vscode.window.showErrorMessage(
@@ -89,7 +89,7 @@ export async function activate(context: vscode.ExtensionContext) {
       const { document, selection } = editor;
       const code = getText(document, selection);
 
-      const { maxLinesToProcess } = vortexConfig;
+      const maxLinesToProcess = getConfigValue("maxLinesToProcess");
       const lineCount = getNumberOfLinesInSelection(document, selection);
       if (lineCount > maxLinesToProcess) {
         await vscode.window.showErrorMessage(
