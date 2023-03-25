@@ -13,24 +13,6 @@ const OPENAI_API_KEY_LOOKUP = "OPENAI_API_KEY";
 const vortexConfig = vscode.workspace.getConfiguration("vortex");
 let vortex: Vortex;
 
-const displayOutput = async (output: string, languageId: string) => {
-  const uri = vscode.Uri.parse("untitled:Review.md");
-  const doc = await vscode.workspace.openTextDocument(uri);
-  const editor = await vscode.window.showTextDocument(doc, {
-    preview: false,
-    viewColumn: vscode.ViewColumn.Beside,
-  });
-
-  await editor.edit((editBuilder) => {
-    editBuilder.insert(new vscode.Position(0, 0), output);
-  });
-  await vscode.commands.executeCommand("markdown.showPreview", uri);
-
-  if (languageId) {
-    vscode.languages.setTextDocumentLanguage(doc, languageId);
-  }
-};
-
 export async function activate(context: vscode.ExtensionContext) {
   SecretStorageInterface.init(context);
   const secretStorage = SecretStorageInterface.instance;
@@ -116,16 +98,7 @@ export async function activate(context: vscode.ExtensionContext) {
         return;
       }
 
-      const reviewText = await vortex.reviewCode(code);
-
-      if (!reviewText) {
-        await vscode.window.showErrorMessage(
-          `There was an issue processing with Vortex`
-        );
-        return;
-      }
-
-      await displayOutput(reviewText, "markdown");
+      await vortex.reviewCode(code);
     }
   );
 

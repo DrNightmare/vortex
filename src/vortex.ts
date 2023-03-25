@@ -1,6 +1,6 @@
 import { window, ProgressLocation, TextEditor, Range, Selection } from "vscode";
 import { OpenAiClient } from "./open-ai-client";
-import { getNumberOfLinesInSelection } from "./utils";
+import { getNumberOfLinesInSelection, displayOutput } from "./utils";
 
 export class Vortex {
   private openAiClient: OpenAiClient;
@@ -86,18 +86,27 @@ export class Vortex {
     });
   };
 
-  reviewCode = async (code: string): Promise<string | null> => {
+  reviewCode = async (code: string): Promise<void> => {
     const prompt = `Act as an expert software engineer. Do a thorough review of the following code and respond with clear actionables on what could be improved: ${code}. Do not include code, just include the actionables in a list. Limit prose. Format your response in markdown. If there are no actionables, respond only with "The given code is already concise and efficient, and there are no obvious areas for improvement."
     Example output for reference:
     ## Review:
     1. Add input validation: The input function assumes that the user will enter a valid integer, but this may not always be the case. Adding input validation can address this issue.
     2. Use f-Strings: Instead of concatenating strings using the operator, use f-Strings for better readability and performance.`;
-    return await window.withProgress(
+    const reviewText = await window.withProgress(
       {
         location: ProgressLocation.Notification,
         title: "Processing...",
       },
       async () => this.openAiClient.getResponse(prompt)
     );
+
+    if (!reviewText) {
+      await window.showErrorMessage(
+        `There was an issue processing with Vortex`
+      );
+      return;
+    }
+
+    await displayOutput(reviewText, "markdown");
   };
 }
