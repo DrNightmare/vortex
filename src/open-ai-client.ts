@@ -12,16 +12,17 @@ enum Model {
 export class OpenAiClient {
   private openai: OpenAIApi | undefined;
 
-  private readonly timeout: number | undefined;
-
   constructor(openAiApiKey: string) {
     const configuration = new Configuration({
       apiKey: openAiApiKey,
     });
 
-    const configTimeout = getConfigValue("requestTimeout");
-    this.timeout = Number(configTimeout ?? 10) * 1000;
     this.openai = new OpenAIApi(configuration);
+  }
+
+  private getTimeout() {
+    const configTimeout = getConfigValue("requestTimeout");
+    return Number(configTimeout ?? 10) * 1000;
   }
 
   async getResponse(prompt: string) {
@@ -37,7 +38,7 @@ export class OpenAiClient {
         model: Model.gpt35Turbo,
         messages,
       },
-      { timeout: this.timeout }
+      { timeout: this.getTimeout() }
     );
     if (response.status !== 200) {
       console.error(
