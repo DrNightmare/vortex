@@ -56,6 +56,23 @@
           }
         }
       }
+    ],
+    "keybindings":[
+      {
+        "command": "vortex.generateCode",
+        "key": "ctrl+j ctrl+g",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "vortex.editCode",
+        "key": "ctrl+j ctrl+e",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "vortex.reviewCode",
+        "key": "ctrl+j ctrl+r",
+        "when": "editorTextFocus"
+      }
     ]
   },
   "scripts": {
