@@ -1,5 +1,7 @@
 # Vortex - Code editing. Redefined, using GPT
 
+[Get the extension here](https://marketplace.visualstudio.com/items?itemName=ArvindPrakash.vortex)
+
 Vortex is an open-source VS Code extension that uses the power of GPT to enhance and edit code directly within the VS Code editor. With Vortex, you can leverage the power of AI to write better code, faster.
 
 ## Requirements
@@ -13,7 +15,7 @@ You can fetch your OpenAI API key at https://platform.openai.com/account/api-key
 
 ## Getting Started
 
-To get started with Vortex, simply install the extension from the VScode Marketplace. Once installed, Vortex will be available in the editor and can be used to generate, edit or review your code.
+To get started with Vortex, simply install the [extension from the VScode Marketplace](https://marketplace.visualstudio.com/items?itemName=ArvindPrakash.vortex). Once installed, Vortex will be available in the editor and can be used to generate, edit or review your code.
 
 **NOTE**: This extension uses VS Code's Secret Storage to safely store API keys, and not in the user settings, which is something that is readable for all other extensions in the workspace.
 
