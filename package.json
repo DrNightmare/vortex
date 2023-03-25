@@ -3,13 +3,16 @@
   "displayName": "Vortex",
   "description": "Code redefined, using GPT",
   "publisher": "ArvindPrakash",
-  "version": "0.0.1",
+  "license": "SEE LICENSE IN LICENSE",
+  "version": "0.2.0",
   "engines": {
     "vscode": "^1.76.0"
   },
   "categories": [
+    "Snippets",
     "Other"
   ],
+  "keywords": ["GPT"],
   "activationEvents": [
     "onLanguage:python",
     "onLanguage:typescipt",
@@ -98,5 +101,16 @@
   },
   "dependencies": {
     "openai": "^3.2.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DrNightmare/vortex"
+  },
+  "bugs": {
+    "url": "https://github.com/DrNightmare/vortex/issues"
+  },
+  "author": {
+    "name": "Arvind Prakash",
+    "url": "https://github.com/DrNightmare"
   }
 }
