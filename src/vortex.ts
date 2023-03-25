@@ -1,12 +1,15 @@
 import { window, ProgressLocation, TextEditor, Range, Selection } from "vscode";
 import { OpenAiClient } from "./open-ai-client";
 import { getNumberOfLinesInSelection, displayOutput } from "./utils";
+import { Logger } from "./logger";
 
 export class Vortex {
   private openAiClient: OpenAiClient;
+  private logger: Logger;
 
   constructor(openAiApiKey: string) {
     this.openAiClient = new OpenAiClient(openAiApiKey);
+    this.logger = Logger.getInstance();
   }
 
   editCode = async (
@@ -24,9 +27,8 @@ export class Vortex {
     );
 
     if (!updatedCode) {
-      await window.showErrorMessage(
-        `There was an issue processing with Vortex`
-      );
+      this.logger.error("Empty response received from OpenAI");
+      await window.showErrorMessage(`Vortex: Empty response received`);
       return;
     }
 
@@ -75,9 +77,8 @@ export class Vortex {
     );
 
     if (!generatedCode) {
-      await window.showErrorMessage(
-        `There was an issue processing with Vortex`
-      );
+      this.logger.error("Empty response received from OpenAI");
+      await window.showErrorMessage(`Vortex: Empty response received`);
       return;
     }
 
@@ -101,9 +102,8 @@ export class Vortex {
     );
 
     if (!reviewText) {
-      await window.showErrorMessage(
-        `There was an issue processing with Vortex`
-      );
+      this.logger.error("Empty response received from OpenAI");
+      await window.showErrorMessage(`Vortex: Empty response received`);
       return;
     }
 

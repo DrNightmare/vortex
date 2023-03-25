@@ -11,7 +11,7 @@ enum Model {
 }
 
 export class OpenAiClient {
-  private openai: OpenAIApi | undefined;
+  private openai: OpenAIApi;
   private logger: Logger;
 
   constructor(openAiApiKey: string) {
@@ -29,15 +29,12 @@ export class OpenAiClient {
   }
 
   async getResponse(prompt: string) {
-    if (!this.openai) {
-      throw new Error("OpenAI is not initialized yet");
-    }
-
     const messages = [
       { role: ChatCompletionRequestMessageRoleEnum.User, content: prompt },
     ];
 
     try {
+      this.logger.debug("Making request to createChatCompletion..");
       const response = await this.openai.createChatCompletion(
         {
           model: Model.gpt35Turbo,
@@ -46,6 +43,7 @@ export class OpenAiClient {
         { timeout: this.getTimeout() }
       );
       const content = response.data.choices[0].message?.content;
+      this.logger.debug(`Received response content: ${content}`);
       return content ? content.trim() : null;
     } catch (err: any) {
       this.logger.error(`Error with createChatCompletion: ${err.message}`);
