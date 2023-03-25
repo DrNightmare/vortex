@@ -2,6 +2,7 @@
   "name": "vortex",
   "displayName": "Vortex",
   "description": "Code redefined, using GPT",
+  "publisher": "ArvindPrakash",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.76.0"
@@ -47,6 +48,11 @@
             "type": "integer",
             "default": 10,
             "description": "Maximum number of seconds to wait for the API to respond."
+          },
+          "vortex.autoFormat": {
+            "type": "boolean",
+            "default": true,
+            "description": "Auto format the document post generating or editing code."
           }
         }
       }

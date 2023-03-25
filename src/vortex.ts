@@ -7,7 +7,11 @@ import {
   commands,
 } from "vscode";
 import { OpenAiClient } from "./open-ai-client";
-import { getNumberOfLinesInSelection, displayOutput } from "./utils";
+import {
+  getNumberOfLinesInSelection,
+  displayOutput,
+  getConfigValue,
+} from "./utils";
 import { Logger } from "./logger";
 
 export class Vortex {
@@ -58,7 +62,9 @@ export class Vortex {
       // clear selection
       const position = editor.selection.end;
       editor.selection = new Selection(position, position);
-      await commands.executeCommand("editor.action.formatDocument");
+      if (getConfigValue("autoFormat")) {
+        await commands.executeCommand("editor.action.formatDocument");
+      }
     }
   };
 
@@ -93,7 +99,9 @@ export class Vortex {
     await editor.edit((edit) => {
       edit.insert(editor.selection.start, generatedCode);
     });
-    await commands.executeCommand("editor.action.formatDocument");
+    if (getConfigValue("autoFormat")) {
+      await commands.executeCommand("editor.action.formatDocument");
+    }
   };
 
   reviewCode = async (code: string): Promise<void> => {
