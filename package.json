@@ -12,7 +12,9 @@
     "Snippets",
     "Other"
   ],
-  "keywords": ["GPT"],
+  "keywords": [
+    "GPT"
+  ],
   "activationEvents": [
     "onLanguage:python",
     "onLanguage:typescipt",
@@ -60,7 +62,7 @@
         }
       }
     ],
-    "keybindings":[
+    "keybindings": [
       {
         "command": "vortex.generateCode",
         "key": "ctrl+j ctrl+g",
