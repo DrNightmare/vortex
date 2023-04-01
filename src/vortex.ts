@@ -7,12 +7,9 @@ import {
   commands,
 } from "vscode";
 import { OpenAiClient } from "./open-ai-client";
-import {
-  getNumberOfLinesInSelection,
-  displayOutput,
-  getConfigValue,
-} from "./utils";
+import { getNumberOfLinesInSelection, getConfigValue } from "./utils";
 import { Logger } from "./logger";
+import { VortexOutputPanel } from "./vortex-output-panel";
 
 export class Vortex {
   private openAiClient: OpenAiClient;
@@ -110,20 +107,10 @@ export class Vortex {
     ## Review:
     1. Add input validation: The input function assumes that the user will enter a valid integer, but this may not always be the case. Adding input validation can address this issue.
     2. Use f-Strings: Instead of concatenating strings using the operator, use f-Strings for better readability and performance.`;
-    const reviewText = await window.withProgress(
-      {
-        location: ProgressLocation.Notification,
-        title: "Processing...",
-      },
-      async () => this.openAiClient.getResponse(prompt)
-    );
 
-    if (!reviewText) {
-      this.logger.error("Empty response received from OpenAI");
-      await window.showErrorMessage(`Vortex: Empty response received`);
-      return;
+    const stream = this.openAiClient.getStreamedResponse(prompt);
+    for await (const token of stream) {
+      VortexOutputPanel.appendContent(token);
     }
-
-    await displayOutput(reviewText, "markdown");
   };
 }
