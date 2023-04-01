@@ -65,7 +65,7 @@ export class VortexOutputPanel {
   public static appendContent(content: string) {
     this.getInstance();
     this.instance.panel.webview.postMessage({
-      command: "update",
+      command: "append",
       data: content,
     });
   }
